@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, FormEvent, useEffect } from "react";
+import { Alert, Box, Button, Container, TextField } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { Container, Box, Typography, TextField, Button, Alert } from "@mui/material";
+import { FormEvent, useEffect, useState } from "react";
 
 export default function Home() {
   const [email, setEmail] = useState("");
@@ -12,7 +12,6 @@ export default function Home() {
 
   const router = useRouter();
 
-  // Automatically redirect to dashboard if the auth token is present
   useEffect(() => {
     const authToken = localStorage.getItem("authToken");
     if (authToken) {
@@ -42,11 +41,7 @@ export default function Home() {
       }
 
       const data = await response.json();
-
-      // Store the auth token in localStorage
       localStorage.setItem("authToken", data.authToken);
-
-      // Navigate to the dashboard on successful login
       router.push("/dashboard");
     } catch (error: any) {
       setError(error.message || "An unexpected error occurred.");
@@ -56,18 +51,32 @@ export default function Home() {
   };
 
   return (
-    <Container maxWidth="sm">
+    <Container
+      maxWidth="sm"
+      sx={{
+        backgroundColor: "#0045851F",
+        borderRadius: "16px",
+        padding: 3,
+        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+        width: "400px", 
+        position: "absolute", 
+        top: "50%", 
+        left: "50%", 
+        transform: "translate(-50%, -50%)", 
+      }}
+    >
       <Box
         sx={{
-          marginTop: 8,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
         }}
       >
-        <Typography component="h1" variant="h5" mb={2}>
-          Login
-        </Typography>
+        <img
+          src="FutureKonnect.png"
+          alt="Logo"
+          style={{ width: "505px", height: "auto", marginBottom: "16px" }}
+        />
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1, width: "100%" }}>
           {error && (
             <Alert severity="error" sx={{ mb: 2 }}>
@@ -82,6 +91,18 @@ export default function Home() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            InputLabelProps={{ style: { color: "white" } }}
+            sx={{
+              input: { color: "white" },
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "white",
+                },
+                "&:hover fieldset": {
+                  borderColor: "#ccc",
+                },
+              },
+            }}
           />
           <TextField
             margin="normal"
@@ -91,12 +112,32 @@ export default function Home() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            InputLabelProps={{ style: { color: "white" } }}
+            sx={{
+              input: { color: "white" },
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "white",
+                },
+                "&:hover fieldset": {
+                  borderColor: "#ccc",
+                },
+              },
+            }}
           />
           <Button
             type="submit"
             fullWidth
             variant="contained"
-            sx={{ mt: 3, mb: 2 }}
+            sx={{
+              mt: 3,
+              mb: 2,
+              background: "linear-gradient(90deg, #5A93C1A3, #235D8CA3)",
+              color: "white",
+              "&:hover": {
+                background: "linear-gradient(90deg, #235D8CA3, #5A93C1A3)",
+              },
+            }}
             disabled={loading}
           >
             {loading ? "Logging in..." : "Login"}
@@ -105,7 +146,12 @@ export default function Home() {
             onClick={() => router.push("/signup")}
             fullWidth
             variant="outlined"
-            sx={{ mt: 1 }}
+            sx={{
+              mt: 1,
+              borderColor: "white",
+              color: "white",
+              "&:hover": { backgroundColor: "#ccc", borderColor: "#ccc", color: "#121212" },
+            }}
           >
             Sign Up
           </Button>
@@ -113,7 +159,7 @@ export default function Home() {
             onClick={() => router.push("/forgot-password")}
             fullWidth
             variant="text"
-            sx={{ mt: 1 }}
+            sx={{ mt: 1, color: "white" }}
           >
             Forgot Password?
           </Button>

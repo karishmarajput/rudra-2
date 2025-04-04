@@ -1,67 +1,75 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import {
   Box,
   Drawer,
   List,
   ListItem,
-  ListItemText,
   ListItemIcon,
+  ListItemText,
   Toolbar,
   Tooltip,
 } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
-import { User } from "../model/user";
-import StatsAndGraph from "../components/stats-and-graph";
-import UsersList from "../components/user-list";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import LogoutIcon from "@mui/icons-material/Logout";
 import PeopleIcon from "@mui/icons-material/People";
+import ReceiptIcon from "@mui/icons-material/Receipt";
 import RouterIcon from "@mui/icons-material/Router";
 import ShieldIcon from "@mui/icons-material/Shield";
 import WifiIcon from "@mui/icons-material/Wifi";
-import ReceiptIcon from "@mui/icons-material/Receipt";
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import StatsAndGraph from "../components/stats-and-graph";
+import UsersList from "../components/user-list";
+import { User } from "../model/user";
 
 const drawerWidthExpanded = 240;
 const drawerWidthCollapsed = 80;
 
 export default function Dashboard() {
   const router = useRouter();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [collapsed, setCollapsed] = useState(false); // Track collapsed state
-  const [activeComponent, setActiveComponent] = useState("dashboard"); // 'dashboard' or 'audit'
+  const [collapsed, setCollapsed] = useState(false);
+  const [activeComponent, setActiveComponent] = useState("dashboard");
   const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
-    // Check if the user is logged in by verifying the presence of the auth token
     const authToken = localStorage.getItem("authToken");
-    setIsLoggedIn(!!authToken);
-
-    // Redirect to login page if not logged in
     if (!authToken) {
       router.push("/");
-    } else {
-      // Fetch user data for Audit Trail
-      fetch("http://localhost:5000/users", {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => setUsers(data))
-        .catch((error) => console.error("Error fetching users:", error));
+      return;
     }
+
+    fetch("http://localhost:5000/users", {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch users");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setUsers(data);
+        } else {
+          console.error("Unexpected data format:", data);
+          setUsers([]);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching users:", error);
+        setUsers([]);
+      });
   }, [router]);
 
-  const handleLogout = () => {
-    // Remove auth token from local storage
-    localStorage.removeItem("authToken");
 
-    // Redirect to the login page
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
     router.push("/");
   };
 
@@ -70,13 +78,13 @@ export default function Dashboard() {
   };
 
   const handleMenuClick = (component: string) => {
-    setActiveComponent(component); // Switch the displayed component
+    setActiveComponent(component);
   };
 
   const renderMenuItem = (
     text: string,
     icon: React.ReactNode,
-    component?: string // Optional for non-clickable items
+    component?: string
   ) => (
     <ListItem
       component={'button'}
@@ -84,11 +92,16 @@ export default function Dashboard() {
       sx={{
         justifyContent: collapsed ? "center" : "flex-start",
         px: 2,
-        cursor: "pointer", // Change cursor to pointer on hover
+        cursor: "pointer",
+        backgroundColor: activeComponent === component ? "#3577AF" : "transparent",
+        "&:hover": {
+          backgroundColor: activeComponent === component ? "#3577AF" : "#1A3A5D",
+        },
+        color: "white",
       }}
     >
       <Tooltip title={collapsed ? text : ""} arrow>
-        <ListItemIcon sx={{ minWidth: 0 }}>{icon}</ListItemIcon>
+        <ListItemIcon sx={{ minWidth: 0, color: "white" }}>{icon}</ListItemIcon>
       </Tooltip>
       {!collapsed && <ListItemText primary={text} />}
     </ListItem>
@@ -96,7 +109,6 @@ export default function Dashboard() {
 
   return (
     <Box sx={{ display: "flex" }}>
-      {/* Side Menu */}
       <Drawer
         variant="permanent"
         sx={{
@@ -105,6 +117,7 @@ export default function Dashboard() {
           "& .MuiDrawer-paper": {
             width: collapsed ? drawerWidthCollapsed : drawerWidthExpanded,
             boxSizing: "border-box",
+            backgroundColor: "#122744",
             transition: "width 0.3s ease-in-out",
           },
         }}
@@ -115,18 +128,24 @@ export default function Dashboard() {
             display: "flex",
             cursor: "pointer",
             height: "64px",
-            backgroundColor: "#1976d2",
+            backgroundColor: "#122744",
           }}
           onClick={toggleCollapse}
         >
           <Tooltip title="Click to toggle menu" arrow>
-            <Box sx={{ textAlign: "center", color: "white" }}>
-              {collapsed ? "LOGO" : "COMPANY LOGO"}
-            </Box>
+            <img
+              src={collapsed ? "fkSmall.png" : "FutureKonnect.png"}
+              alt="Company Logo"
+              style={{
+                backgroundColor: 'transparent',
+                width: collapsed ? "30px" : "200px",
+                height: "auto",
+                transition: "width 0.3s ease-in-out",
+              }}
+            />
           </Tooltip>
         </Toolbar>
         <List>
-          {/* Adding all the menu items */}
           {renderMenuItem("Dashboard", <DashboardIcon />, "dashboard")}
           {renderMenuItem("Tenants", <PeopleIcon />, undefined)}
           {renderMenuItem("Routers", <RouterIcon />, undefined)}
@@ -141,11 +160,15 @@ export default function Dashboard() {
             sx={{
               justifyContent: collapsed ? "center" : "flex-start",
               px: 2,
-              cursor: "pointer", // Change cursor to pointer on hover
+              cursor: "pointer",
+              "&:hover": {
+                backgroundColor: "#1A3A5D",
+              },
+              color: "white",
             }}
           >
             <Tooltip title={collapsed ? "Logout" : ""} arrow>
-              <ListItemIcon sx={{ minWidth: 0 }}>
+              <ListItemIcon sx={{ minWidth: 0, color: "white" }}>
                 <LogoutIcon />
               </ListItemIcon>
             </Tooltip>
@@ -153,8 +176,6 @@ export default function Dashboard() {
           </ListItem>
         </List>
       </Drawer>
-
-      {/* Main Content */}
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <Toolbar />
         {activeComponent === "dashboard" && <StatsAndGraph />}

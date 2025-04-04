@@ -14,17 +14,22 @@ export default function UsersList({ users }: UsersListProps) {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>ID</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Email</TableCell>
+            <TableCell sx={{ color: "white" }}>ID</TableCell>
+            <TableCell sx={{ color: "white" }}>Name</TableCell>
+            <TableCell sx={{ color: "white" }}>Email</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {users.map((user) => (
-            <TableRow key={user.id}>
-              <TableCell>{user.id}</TableCell>
-              <TableCell>{user.name}</TableCell>
-              <TableCell>{user.email}</TableCell>
+          {users.map((user, index) => (
+            <TableRow
+              key={user.id}
+              sx={{
+                backgroundColor: index % 2 === 0 ? "#172C43" : "transparent",
+              }}
+            >
+              <TableCell sx={{ color: "white" }}>{user.id}</TableCell>
+              <TableCell sx={{ color: "white" }}>{user.name}</TableCell>
+              <TableCell sx={{ color: "white" }}>{user.email}</TableCell>
             </TableRow>
           ))}
         </TableBody>

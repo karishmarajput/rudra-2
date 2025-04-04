@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, FormEvent, useEffect } from "react";
+import { Alert, Box, Button, Container, TextField } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { Container, Box, Typography, TextField, Button, Alert } from "@mui/material";
+import { FormEvent, useEffect, useState } from "react";
 
 export default function ResetPasswordPage() {
   const [newPassword, setNewPassword] = useState("");
@@ -50,7 +50,7 @@ export default function ResetPasswordPage() {
       }
 
       setMessage("Your password has been reset successfully.");
-      setTimeout(() => router.push("/"), 3000); // Redirect to login after success
+      setTimeout(() => router.push("/"), 3000); 
     } catch (error: any) {
       setError(error.message || "An unexpected error occurred.");
     } finally {
@@ -59,11 +59,32 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <Container maxWidth="sm">
-      <Box sx={{ marginTop: 8, display: "flex", flexDirection: "column", alignItems: "center" }}>
-        <Typography component="h1" variant="h5" mb={2}>
-          Reset Password
-        </Typography>
+    <Container
+      maxWidth="sm"
+      sx={{
+        backgroundColor: "#0045851F",
+        borderRadius: "16px",
+        padding: 3,
+        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+        width: "400px", 
+        position: "absolute", 
+        top: "50%", 
+        left: "50%", 
+        transform: "translate(-50%, -50%)", 
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <img
+          src="FutureKonnect.png"
+          alt="Logo"
+          style={{ width: "505px", height: "auto", marginBottom: "16px" }}
+        />
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1, width: "100%" }}>
           {error && (
             <Alert severity="error" sx={{ mb: 2 }}>
@@ -83,6 +104,18 @@ export default function ResetPasswordPage() {
             type="password"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
+            InputLabelProps={{ style: { color: "white" } }}
+            sx={{
+              input: { color: "white" },
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "white",
+                },
+                "&:hover fieldset": {
+                  borderColor: "#ccc",
+                },
+              },
+            }}
           />
           <TextField
             margin="normal"
@@ -92,12 +125,32 @@ export default function ResetPasswordPage() {
             type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
+            InputLabelProps={{ style: { color: "white" } }}
+            sx={{
+              input: { color: "white" },
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "white",
+                },
+                "&:hover fieldset": {
+                  borderColor: "#ccc",
+                },
+              },
+            }}
           />
           <Button
             type="submit"
             fullWidth
             variant="contained"
-            sx={{ mt: 3, mb: 2 }}
+            sx={{
+              mt: 3,
+              mb: 2,
+              background: "linear-gradient(90deg, #5A93C1A3, #235D8CA3)",
+              color: "white",
+              "&:hover": {
+                background: "linear-gradient(90deg, #235D8CA3, #5A93C1A3)",
+              },
+            }}
             disabled={loading}
           >
             {loading ? "Submitting..." : "Reset Password"}

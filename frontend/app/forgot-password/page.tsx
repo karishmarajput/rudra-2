@@ -1,15 +1,15 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { Alert, Box, Button, Container, TextField } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { Container, Box, Typography, TextField, Button, Alert } from "@mui/material";
+import { FormEvent, useState } from "react";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  
+
   const router = useRouter();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -17,7 +17,7 @@ export default function ForgotPasswordPage() {
     setError("");
     setMessage("");
     setLoading(true);
-  
+
     try {
       const response = await fetch("http://localhost:5000/forgot-password", {
         method: "POST",
@@ -28,12 +28,10 @@ export default function ForgotPasswordPage() {
           email,
         }),
       });
-  
       if (!response.ok) {
         const data = await response.json();
         throw new Error(data.message || "Failed to send password reset email");
       }
-  
       setMessage("A password reset link has been sent to your email.");
     } catch (error: any) {
       setError(error.message || "An unexpected error occurred.");
@@ -41,21 +39,34 @@ export default function ForgotPasswordPage() {
       setLoading(false);
     }
   };
-  
 
   return (
-    <Container maxWidth="sm">
+    <Container
+      maxWidth="sm"
+      sx={{
+        backgroundColor: "#0045851F",
+        borderRadius: "16px",
+        padding: 3,
+        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+        width: "400px", 
+        position: "absolute", 
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)", 
+      }}
+    >
       <Box
         sx={{
-          marginTop: 8,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
         }}
       >
-        <Typography component="h1" variant="h5" mb={2}>
-          Forgot Password
-        </Typography>
+        <img
+          src="FutureKonnect.png" 
+          alt="Logo"
+          style={{ width: "505px", height: "auto", marginBottom: "16px" }}
+        />
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1, width: "100%" }}>
           {error && (
             <Alert severity="error" sx={{ mb: 2 }}>
@@ -75,12 +86,32 @@ export default function ForgotPasswordPage() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            InputLabelProps={{ style: { color: "white" } }}
+            sx={{
+              input: { color: "white" },
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "white",
+                },
+                "&:hover fieldset": {
+                  borderColor: "#ccc",
+                },
+              },
+            }}
           />
           <Button
             type="submit"
             fullWidth
             variant="contained"
-            sx={{ mt: 3, mb: 2 }}
+            sx={{
+              mt: 3,
+              mb: 2,
+              background: "linear-gradient(90deg, #5A93C1A3, #235D8CA3)",
+              color: "white",
+              "&:hover": {
+                background: "linear-gradient(90deg, #235D8CA3, #5A93C1A3)",
+              },
+            }}
             disabled={loading}
           >
             {loading ? "Submitting..." : "Reset Password"}
@@ -89,7 +120,10 @@ export default function ForgotPasswordPage() {
             onClick={() => router.push("/")}
             fullWidth
             variant="text"
-            sx={{ mt: 1 }}
+            sx={{
+              mt: 1,
+              color: "white",
+            }}
           >
             Back to Login
           </Button>
