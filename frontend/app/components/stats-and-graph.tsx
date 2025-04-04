@@ -28,6 +28,11 @@ export default function StatsAndGraph() {
   };
 
   const options = {
+    animation: {
+      duration: 0, 
+    },
+    responsive: false,
+    maintainAspectRatio: false, 
     scales: {
       y: {
         beginAtZero: true,
@@ -37,7 +42,6 @@ export default function StatsAndGraph() {
         },
       },
     },
-    responsive: true,
   };
 
   return (
@@ -172,9 +176,18 @@ export default function StatsAndGraph() {
               borderRadius: 2,
               padding: 2,
               backgroundColor: "#f5f5f5",
+              width: "100%", 
+              height: "300px",
             }}
           >
-            <Bar data={histogramData} options={options} />
+            <Bar
+              data={histogramData}
+              options={options}
+              style={{
+                width: "100%", 
+                height: "100%", 
+              }}
+            />
           </Box>
           <Typography
             variant="subtitle1"
@@ -194,8 +207,8 @@ export default function StatsAndGraph() {
         >
           <Box
             sx={{
-              maxHeight: "330px", 
-              overflow: "auto", 
+              maxHeight: "330px",
+              overflow: "auto",
               border: "1px solid #ccc",
               borderRadius: 2,
             }}
