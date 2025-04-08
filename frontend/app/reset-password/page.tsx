@@ -10,15 +10,19 @@ export default function ResetPasswordPage() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
 
   const router = useRouter();
-  const token = new URLSearchParams(window.location.search).get("token");
 
   useEffect(() => {
-    if (!token) {
-      setError("Invalid or missing token.");
+    if (typeof window !== "undefined") {
+      const urlToken = new URLSearchParams(window.location.search).get("token");
+      setToken(urlToken);
+      if (!urlToken) {
+        setError("Invalid or missing token.");
+      }
     }
-  }, [token]);
+  }, []);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
