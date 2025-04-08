@@ -8,7 +8,11 @@ const cors = require("cors");
 require('dotenv').config();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: process.env.NEXT_PUBLIC_Frontend_URL,
+  methods: "GET,POST,PUT,DELETE",
+  allowedHeaders: "Content-Type,Authorization"
+}));
 app.use(bodyParser.json());
 const SECRET_KEY = process.env.SECRET_KEY; 
 const port = process.env.PORT || 5000;
