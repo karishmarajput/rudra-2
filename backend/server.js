@@ -88,18 +88,23 @@ app.post("/forgot-password", async (req, res) => {
     const user = result.rows[0];
     const resetToken = jwt.sign({ id: user.id, email: user.email }, SECRET_KEY, { expiresIn: "15m" });
     const transporter = nodemailer.createTransport({
-      service: "Outlook",
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false,
       auth: {
         user: process.env.EMAIL,
         pass: process.env.EMAILPASSWORD,
       },
+      tls: {
+        rejectUnauthorized: false,
+      }
     });
 
     const mailOptions = {
       from: process.env.EMAIL,
       to: email,
       subject: "Password Reset Request",
-      text: `Please use the following link to reset your password:\n\nhttp://localhost:3000/reset-password?token=${resetToken}\n\nThis link will expire in 15 minutes.`,
+      text: `Please use the following link to reset your password:\n\n${process.env.NEXT_PUBLIC_Frontend_URL}/reset-password?token=${resetToken}\n\nThis link will expire in 15 minutes.`,
     };
     await transporter.sendMail(mailOptions);
     res.status(200).json({ message: "Password reset email sent successfully." });
