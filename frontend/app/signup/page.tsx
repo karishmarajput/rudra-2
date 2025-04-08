@@ -26,7 +26,7 @@ export default function Register() {
     setLoading(true);
   
     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/register`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

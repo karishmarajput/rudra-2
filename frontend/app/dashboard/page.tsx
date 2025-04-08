@@ -42,7 +42,7 @@ export default function Dashboard() {
       return;
     }
 
-    fetch(`${process.env.REACT_APP_BACKEND_URL}/users`, {
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users`, {
       headers: {
         Authorization: `Bearer ${authToken}`,
       },

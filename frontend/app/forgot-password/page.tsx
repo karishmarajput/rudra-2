@@ -19,7 +19,7 @@ export default function ForgotPasswordPage() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/forgot-password`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/forgot-password`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
